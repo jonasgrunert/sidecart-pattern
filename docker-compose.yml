@@ -1,0 +1,27 @@
+version: '3'
+services:
+  keycloak:
+    container_name: keycloak
+    build: keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: h2
+      PROXY_ADDRESS_FORWARDING: "true"
+  api:
+    container_name: api
+    build: api
+  proxy:
+    container_name: proxy
+    build:
+      context: proxy
+      args:
+        http_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
+        https_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
+        HTTP_PROXY_AUTH: basic:*:MZXCI:dVjywAyz-hgT=9K
+    ports:
+      - 443:443
+      - 80:80
+    depends_on:
+      - api
+      - keycloak
