@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Security with OAuth2</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <div class="box">
+            <h1 class="title">Implicit Flow</h1>
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="button is-link">Login</a>
+              </p>
+              <p class="control is-expanded">
+                <input class="input" type="text" readonly />
+              </p>
+            </div>
+            <div class="field has-addons">
+              <div class="control">
+                <span class="select">
+                  <select>
+                    <option value="unprotected">unprotected</option>
+                    <option value="protected">protected</option>
+                    <option value="private">private</option>
+                  </select>
+                </span>
+              </div>
+              <div class="control is-expanded">
+                <input class="input" type="text" readonly />
+              </div>
+              <div class="control">
+                <button class="button is-primary">Request</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="box">
+            <h1 class="title">Authorization Token Flow</h1>
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="button is-link">Login</a>
+              </p>
+              <p class="control is-expanded">
+                <input class="input" type="text" readonly />
+              </p>
+            </div>
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="button is-danger">Token</a>
+              </p>
+              <p class="control is-expanded">
+                <input class="input" type="text" readonly />
+              </p>
+            </div>
+            <div class="field has-addons">
+              <div class="control">
+                <span class="select">
+                  <select>
+                    <option value="unprotected">unprotected</option>
+                    <option value="protected">protected</option>
+                    <option value="private">private</option>
+                  </select>
+                </span>
+              </div>
+              <div class="control is-expanded">
+                <input class="input" type="text" readonly />
+              </div>
+              <div class="control">
+                <button class="button is-primary">Request</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
