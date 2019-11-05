@@ -5,11 +5,13 @@ dns.setServers(["127.0.0.11"]);
 
 async function fetch(url, { json, query, form, method, headers }) {
   return new Promise((resolve, reject) => {
-    const data = json
-      ? JSON.stringify(json)
-      : form
-      ? qstring.stringify(form)
-      : undefined;
+    let data = "";
+    if (json) {
+      data = JSON.stringify(json);
+    }
+    if (form) {
+      data = qstring.stringify(form);
+    }
     const dataheader = data
       ? {
           "Content-Length": Buffer.from(data).length,
@@ -21,7 +23,7 @@ async function fetch(url, { json, query, form, method, headers }) {
     const querystring = query ? qstring.stringify(query) : "";
     const req = http.request(
       url + querystring,
-      { method, headers: { ...headers, dataheader } },
+      { method, headers: { ...headers, ...dataheader } },
       r => {
         r.setEncoding("UTF-8");
         let body = "";
@@ -34,7 +36,8 @@ async function fetch(url, { json, query, form, method, headers }) {
         });
       }
     );
-    req.end(data);
+    req.write(data, e => console.log(e));
+    req.end();
   });
 }
 
@@ -67,7 +70,6 @@ http
             }
           )
         );
-        console.log(token);
         const user = JSON.parse(
           await fetch(
             `http://keycloak:8080/auth/admin/realms/demo/users/${
@@ -76,7 +78,6 @@ http
             { headers: { Authorization: `Bearer ${token.access_token}` } }
           )
         );
-        console.log(JSON.stringify(user));
         res.write(`Private ressource of ${user.username}`);
         break;
       }
