@@ -19,8 +19,6 @@ services:
       #   http_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
       #   https_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
       #   HTTP_PROXY_AUTH: basic:*:MZXCI:dVjywAyz-hgT=9K
-    volumes:
-      - ./proxy/index.html:/var/www/html/index.html
     ports:
       - 443:443
       - 80:80
