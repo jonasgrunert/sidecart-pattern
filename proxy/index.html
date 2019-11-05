@@ -20,27 +20,31 @@
             <h1 class="title">Implicit Flow</h1>
             <div class="field is-grouped">
               <p class="control">
-                <a class="button is-link">Login</a>
+                <a
+                  class="button is-link"
+                  href="https://localhost/auth/realms/demo/protocol/openid-connect/auth?client_id=implicit&response_type=token&redirect_uri=https://localhost&scope=profile"
+                  >Login</a
+                >
               </p>
               <p class="control is-expanded">
-                <input class="input" type="text" readonly />
+                <input id="impl-acc" class="input" type="text" readonly />
               </p>
             </div>
             <div class="field has-addons">
               <div class="control">
                 <span class="select">
-                  <select>
-                    <option value="unprotected">unprotected</option>
+                  <select id="impl">
+                    <option value="unprotected" selected>unprotected</option>
                     <option value="protected">protected</option>
                     <option value="private">private</option>
                   </select>
                 </span>
               </div>
               <div class="control is-expanded">
-                <input class="input" type="text" readonly />
+                <input class="input" type="text" id="impl-res" readonly />
               </div>
               <div class="control">
-                <button class="button is-primary">Request</button>
+                <button class="button is-primary" id="impl-req">Request</button>
               </div>
             </div>
           </div>
@@ -50,40 +54,104 @@
             <h1 class="title">Authorization Token Flow</h1>
             <div class="field is-grouped">
               <p class="control">
-                <a class="button is-link">Login</a>
+                <a
+                  class="button is-link"
+                  href="https://localhost/auth/realms/demo/protocol/openid-connect/auth?client_id=authorization&response_type=code&redirect_uri=https://localhost&scope=profile"
+                  >Login</a
+                >
               </p>
               <p class="control is-expanded">
-                <input class="input" type="text" readonly />
+                <input class="input" id="auth-tok" type="text" readonly />
               </p>
             </div>
             <div class="field is-grouped">
               <p class="control">
-                <a class="button is-danger">Token</a>
+                <a class="button is-danger" id="tok-req">Token</a>
               </p>
               <p class="control is-expanded">
-                <input class="input" type="text" readonly />
+                <input id="auth-acc" class="input" type="text" readonly />
               </p>
             </div>
             <div class="field has-addons">
               <div class="control">
                 <span class="select">
-                  <select>
-                    <option value="unprotected">unprotected</option>
+                  <select id="auth">
+                    <option value="unprotected" selected>unprotected</option>
                     <option value="protected">protected</option>
                     <option value="private">private</option>
                   </select>
                 </span>
               </div>
               <div class="control is-expanded">
-                <input class="input" type="text" readonly />
+                <input class="input" type="text" id="auth-res" readonly />
               </div>
               <div class="control">
-                <button class="button is-primary">Request</button>
+                <button class="button is-primary" id="auth-req">Request</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script>
+      function updateToken(id, value) {
+        try {
+          document.getElementById(id).value = value;
+        } catch (e) {
+          console.warn(e.message);
+        }
+      }
+      function extractToken(name) {
+        const hash = window.location.hash.slice(1).split("&");
+        const tokenarr = hash.filter(h => h.startsWith(name));
+        if (tokenarr.length === 0) {
+          return false;
+        }
+        token = tokenarr[0].substring(name.length + 1);
+        return token ? token : false;
+      }
+      function extractCode(name) {
+        return new URLSearchParams(window.location.search).get(name);
+      }
+      async function fetchApi(client) {
+        const type = document.getElementById(client).value;
+        const res = await fetch(`https://localhost/api/${type}`, {
+          headers: {
+            Authorization: `Bearer ${
+              document.getElementById(`${client}-acc`).value
+            }`
+          }
+        });
+        updateToken(`${client}-res`, await res.text());
+      }
+      async function fetchToken() {
+        const code = document.getElementById("auth-tok").value;
+        const res = await fetch(
+          "https://localhost/auth/realms/demo/protocol/openid-connect/token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `grant_type=authorization_code&redirect_uri=https://localhost&client_id=authorization&client_secret=this-is-my-secret&code=${code}`
+          }
+        );
+        const json = await res.json();
+        updateToken("auth-acc", json.access_token);
+      }
+      document.addEventListener("DOMContentLoaded", function() {
+        const access = extractToken("access_token");
+        if (access) {
+          updateToken("impl-acc", access);
+        } else {
+          updateToken("auth-tok", extractCode("code"));
+        }
+
+        ["auth", "impl"].forEach(
+          i => (document.getElementById(`${i}-req`).onclick = () => fetchApi(i))
+        );
+        document.getElementById("tok-req").onclick = () => fetchToken();
+      });
+    </script>
   </body>
 </html>
