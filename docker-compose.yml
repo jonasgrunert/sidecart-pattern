@@ -15,10 +15,10 @@ services:
     container_name: proxy
     build:
       context: proxy
-      args:
-        http_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
-        https_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
-        HTTP_PROXY_AUTH: basic:*:MZXCI:dVjywAyz-hgT=9K
+      # args:
+      #   http_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
+      #   https_proxy: http://MZXCI:dVjywAyz-hgT=9K@bbs-proxy.bayerbbs.net:80
+      #   HTTP_PROXY_AUTH: basic:*:MZXCI:dVjywAyz-hgT=9K
     ports:
       - 443:443
       - 80:80
